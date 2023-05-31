@@ -1,0 +1,28 @@
+Target = arm
+ARMGNU ?= /Users/zhousicheng/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi
+# ARMGNU ?= /Users/qinyuzhou/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi
+
+ifeq ($(Target), arm)
+    AS	= $(ARMGNU)-as
+    LD	= $(ARMGNU)-ld
+    LDFLAGS = -m armelf
+    CC	= $(ARMGNU)-gcc
+    CFLAGS  = -gdwarf-2 -g3 -mbe32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce #-Wall
+    CPP	= $(ARMGNU)-cpp -nostdinc
+    AR	= $(ARMGNU)-ar
+    STRIP = $(ARMGNU)-strip
+    OBJCOPY = $(ARMGNU)-objcopy
+endif
+
+ifeq ($(Target), x86_64)
+    AS	= i386-elf-as --32
+    LD	= i386-elf-ld
+    LDFLAGS = -m elf_i386
+    CC	= i386-elf-gcc
+    CFLAGS  = -gdwarf-2 -g3 -m32 -fno-builtin -fno-stack-protector -fomit-frame-pointer -fstrength-reduce #-Wall
+    CPP	= i386-elf-cpp -nostdinc
+    AR	=i386-elf-ar
+    STRIP = i386-elf-strip
+    OBJCOPY = i386-elf-objcopy
+endif
+
