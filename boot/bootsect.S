@@ -117,7 +117,7 @@ write_pte:
     orr r1, r1, #0x1 
     mcr p15, 0, r1, c1, c0, 0
 */
-    ; cpsie i  
+    cpsie i  
     b main
 
 Undefined_Handler:

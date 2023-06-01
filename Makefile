@@ -27,8 +27,8 @@ kernel/kernel.o:
 boot/bootsect.o: boot/bootsect.S
 	@make bootsect.o -C boot
 
-bootsect: boot/bootsect.o init/main.o
-	@$(LD) $(LDFLAGS) -o bootsect boot/bootsect.o init/main.o
+bootsect: boot/bootsect.o init/main.o bsp/uart.o
+	@$(LD) $(LDFLAGS) -o bootsect boot/bootsect.o init/main.o bsp/uart.o
 	@$(OBJCOPY) -R .pdr -R .comment -R.note -S -O binary bootsect
 
 start:
@@ -59,3 +59,4 @@ clean:
 	@rm -f init/*.o
 	(cd boot;make clean)
 	(cd kernel;make clean)
+	(cd bsp;make clean)
