@@ -45,8 +45,13 @@ debug:
 test:
 	@qemu-system-arm -machine xilinx-zynq-a9 -m 16M \
 	-device loader,file=bootsect,addr=0x00000000 \
+	-nographic
+
+t_debug:
+	@qemu-system-arm -machine xilinx-zynq-a9 -m 16M \
+	-device loader,file=bootsect,addr=0x00000000 \
 	-S -s \
-# -nographic
+	-nographic
 
 clean:
 	@rm -f Image bootsect 

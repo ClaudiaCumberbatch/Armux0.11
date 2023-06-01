@@ -23,6 +23,7 @@ begbss:
 .text
 _start:/*初始化中断向量表 */
     b Reset_Handler		/* 复位中断 					*/	
+    b main
 	b Undefined_Handler	/* 未定义中断 					*/
 	b SVC_Handler		/* SVC(Supervisor)中断 		*/
 	b Prefetch_Handler	/* 预取终止中断 					*/
@@ -34,7 +35,6 @@ FIQ_Handler:		/* FIQ(快速中断)未定义中断 			*/
 Reset_Handler: 
     cpsid i						// 关闭全局中断
     ldr sp,=0xFFFFFF
-    b main
     ldr r0,=stack_base
     msr cpsr_c,FIQ_MOD
     mov sp,r0
