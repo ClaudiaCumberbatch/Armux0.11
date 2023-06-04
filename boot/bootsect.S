@@ -30,6 +30,8 @@ _start:/*初始化中断向量表 */
 	b NotUsed_Handler	/* 未使用中断					*/
 	b IRQ_Handler		/* IRQ中断 					*/
 FIQ_Handler:		/* FIQ(快速中断)未定义中断 			*/
+    ldr r0, =FIQ_Handler
+	bx r0
 
 .align 4
 stack_begin:
@@ -133,15 +135,37 @@ write_pte:
 Undefined_Handler:
     ldr r0, =Undefined_Handler
 	bx r0
-SVC_Handler:
 
+SVC_Handler:
+    ldr r0, =SVC_Handler
+	bx r0
+/*
+    stmdb sp!, {r0-r12,lr}
+	msr cpsr_c, SYS_MOD
+	push {r0 - r3, r12}
+	and r0, r7, #0xff
+	bl  system_call
+	mov r6,r0
+	pop {r0 - r3, r12}
+	blx r6
+	msr cpsr_c, SVC_MOD
+	ldmia sp!, {r0-r12,pc}^
+*/
 Prefetch_Handler:
+    ldr r0, =Prefetch_Handler	
+	bx r0
 
 Data_Handler:
+    ldr r0, =Data_Handler
+	bx r0
 
 NotUsed_Handler:
+    ldr r0, =NotUsed_Handler
+	bx r0
 
 IRQ_Handler:
+    ldr r0, =IRQ_Handler
+	bx r0
 
 .text
 endtext:
