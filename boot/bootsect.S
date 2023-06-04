@@ -1,9 +1,8 @@
     .arm
     
-    .equ stack_base,0xFFFFF
-    .equ IRQ_Stack_Size,0x1000
+    .equ SVC_Stack_Size,0x00000100
+    .equ IRQ_Stack_Size,0x00000800
     .equ FIQ_Stack_Size,0x1000
-    .equ SVC_Stack_Size,0x1000
     .equ USR_MOD,0x10
     .equ SYS_MOD,0x1F
     .equ SVC_MOD,0x13
@@ -11,6 +10,7 @@
     .equ FIQ_MOD,0x11
     .equ MOD_MASK,0x1f
     .equ ttb_address,0x10000
+    .equ stack_start,0xFFFFFF
 
     .extern main
     .global _start, begtext, begdata, begbss, endtext, enddata, endbss
@@ -31,23 +31,15 @@ _start:/*初始化中断向量表 */
 	b IRQ_Handler		/* IRQ中断 					*/
 FIQ_Handler:		/* FIQ(快速中断)未定义中断 			*/
 
+.align 4
+stack_begin:
+.rept (SVC_Stack_Size + IRQ_Stack_Size)
+.byte 0
+.endr
+stack_top:
+
 Reset_Handler: 
     cpsid i					// 关闭全局中断
-    ldr sp,=0xFFFFFF
-/*
-    ldr r0,=stack_base
-    msr cpsr_c,FIQ_MOD
-    mov sp,r0
-    sub r0,r0, #FIQ_Stack_Size
-    msr cpsr_c,IRQ_MOD
-    mov sp,r0
-    sub r0,r0, #IRQ_Stack_Size
-    msr cpsr_c,SVC_MOD
-    mov sp,r0
-    sub r0,r0, #SVC_Stack_Size
-    msr cpsr_c,SYS_MOD
-    mov sp,r0
-*/
 	// 关闭I,DCache和MMU
 	mrc     p15, 0, r0, c1, c0, 0     // 读取CP15的C1寄存器到R0中       		        	
     bic     r0,  r0, #(0x1 << 12)     // 清除C1寄存器的bit12位(I位)，关闭I Cache            	
@@ -118,7 +110,24 @@ write_pte:
     mcr p15, 0, r1, c1, c0, 0
     cpsie i  
 */
-    msr CPSR_c,USR_MOD
+
+    ldr r6, =stack_start
+    sub r6,r6, #0x01000
+    mov sp, r6
+    cpsid i
+	ldr r0, =stack_top
+	msr cpsr_c, IRQ_MOD
+	mov sp, r0
+
+	msr cpsr_c, SVC_MOD
+	sub r0, r0,#IRQ_Stack_Size
+	mov sp, r0
+
+	msr cpsr_c, SYS_MOD
+	and r6, r8
+	add r6, r6, #0X1000	
+	mov sp, r6
+
     b main
 
 Undefined_Handler:
