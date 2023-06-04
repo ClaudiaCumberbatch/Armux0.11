@@ -23,7 +23,6 @@ begbss:
 .text
 _start:/*初始化中断向量表 */
     b Reset_Handler		/* 复位中断 					*/	
-    b main
 	b Undefined_Handler	/* 未定义中断 					*/
 	b SVC_Handler		/* SVC(Supervisor)中断 		*/
 	b Prefetch_Handler	/* 预取终止中断 					*/
@@ -33,8 +32,9 @@ _start:/*初始化中断向量表 */
 FIQ_Handler:		/* FIQ(快速中断)未定义中断 			*/
 
 Reset_Handler: 
-    cpsid i						// 关闭全局中断
+    cpsid i					// 关闭全局中断
     ldr sp,=0xFFFFFF
+/*
     ldr r0,=stack_base
     msr cpsr_c,FIQ_MOD
     mov sp,r0
@@ -47,7 +47,7 @@ Reset_Handler:
     sub r0,r0, #SVC_Stack_Size
     msr cpsr_c,SYS_MOD
     mov sp,r0
-
+*/
 	// 关闭I,DCache和MMU
 	mrc     p15, 0, r0, c1, c0, 0     // 读取CP15的C1寄存器到R0中       		        	
     bic     r0,  r0, #(0x1 << 12)     // 清除C1寄存器的bit12位(I位)，关闭I Cache            	
@@ -76,19 +76,19 @@ set_loop:
     bne way_loop @ if not, iterate way_loop
 
     @  Branch Prediction Enable
+
     mov r1, #0
     mrc p15, 0, r1, c1, c0, 0 @ Read Control Register configuration data
     orr r1, r1, #(0x1 << 11) @ Global BP Enable bit
     mcr p15, 0, r1, c1, c0, 0 @ Write Control Register configuration data
 
     // 开启I,DCache和MMU
-    mrc     p15, 0, r0, c1, c0, 0  
-       		        	
+
+    mrc     p15, 0, r0, c1, c0, 0     		        	
     orr     r0,  r0, #(0x1 << 12)     
     orr     r0,  r0, #(0x1 << 2)      				
     orr     r0,  r0, #(0x1 << 1)      	
     mcr     p15, 0, r0, c1, c0, 0 
-
     ldr r0, =0b00000000000000000000110111100010  
     ldr r1, =ttb_address
     ldr r3, = 4095 
@@ -110,14 +110,15 @@ write_pte:
     ldr r1, =ttb_address
     mcr p15, 0, r1, c2, c0, 0
 
-    LDR r1, =0x55555555
-    MCR p15, 0, r1, c3, c0, 0
+    ldr r1, =0x55555555
+    mcr p15, 0, r1, c3, c0, 0
 /*
     mrc p15, 0, r1, c1, c0, 0 
     orr r1, r1, #0x1 
     mcr p15, 0, r1, c1, c0, 0
-*/
     cpsie i  
+*/
+    msr CPSR_c,USR_MOD
     b main
 
 Undefined_Handler:
