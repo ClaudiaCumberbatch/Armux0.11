@@ -5,4 +5,4 @@ bootsect.o: bootsect.S
 	@sync
 
 clean:
-	@rm -f bootsect.o
+	@rm -f *.o

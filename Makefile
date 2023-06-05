@@ -24,11 +24,16 @@ tools/system: boot/bootsect.o init/main.o
 kernel/kernel.o:
 	@make kernel.o -C kernel
 
+bsp/bsp.o:
+	@make bsp.o -C bsp
+
 boot/bootsect.o: boot/bootsect.S
 	@make bootsect.o -C boot
 
-bootsect: boot/bootsect.o init/main.o bsp/uart.o
-	@$(LD) $(LDFLAGS) -o bootsect boot/bootsect.o init/main.o bsp/uart.o
+OBJS = boot/bootsect.o init/main.o bsp/bsp.o
+
+bootsect: $(OBJS)
+	@$(LD) $(LDFLAGS) -o bootsect $(OBJS)
 	@$(OBJCOPY) -R .pdr -R .comment -R.note -S -O binary bootsect
 
 start:
@@ -55,8 +60,7 @@ t_debug:
 
 clean:
 	@rm -f Image bootsect 
-	@rm -f boot/*.o
 	@rm -f init/*.o
-	(cd boot;make clean)
-	(cd kernel;make clean)
-	(cd bsp;make clean)
+	@(cd boot;make clean)
+	@(cd kernel;make clean)
+	@(cd bsp;make clean)

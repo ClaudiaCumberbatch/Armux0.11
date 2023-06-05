@@ -15,5 +15,11 @@ CPP	+= -I../include
 	@$(CC) $(CFLAGS) \
 	-c -o $*.o $<
 
+OBJS = uart.o bsp_int.o
+
+bsp.o: $(OBJS)
+	@$(LD) -r -o bsp.o $(OBJS)
+	@sync
+
 clean:
 	@rm -f *.o 

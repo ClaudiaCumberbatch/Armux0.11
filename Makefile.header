@@ -1,6 +1,6 @@
 Target = arm
-ARMGNU ?= /Users/zhousicheng/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi
-# ARMGNU ?= /Users/qinyuzhou/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi
+# ARMGNU ?= /Users/zhousicheng/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi
+ARMGNU ?= /Users/qinyuzhou/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi
 
 ifeq ($(Target), arm)
     AS	= $(ARMGNU)-as

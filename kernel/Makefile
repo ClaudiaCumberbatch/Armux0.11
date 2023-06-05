@@ -15,7 +15,7 @@ CPP	+= -I../include
 	@$(CC) $(CFLAGS) \
 	-c -o $*.o $<
 
-OBJS  = vsprintf.o
+OBJS  = #sys.c
 # sched.o system_call.o traps.o asm.o fork.o panic.o printk.o vsprintf.o sys.o exit.o signal.o mktime.o who.o
 
 kernel.o: $(OBJS)
@@ -23,6 +23,4 @@ kernel.o: $(OBJS)
 	@sync
 
 clean:
-	@rm -f *.o *.a tmp_make
-	@for i in *.c;do rm -f `basename $$i .c`.s;done
-# @for i in chr_drv blk_drv math; do make clean -C $$i; done
+	@rm -f *.o *.a

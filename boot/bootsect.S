@@ -150,7 +150,8 @@ SVC_Handler:
 	blx r6
 	msr cpsr_c, SVC_MOD
 	ldmia sp!, {r0-r12,pc}^
-*/
+    */
+
 Prefetch_Handler:
     ldr r0, =Prefetch_Handler	
 	bx r0
@@ -164,9 +165,27 @@ NotUsed_Handler:
 	bx r0
 
 IRQ_Handler:
+/*
     ldr r0, =IRQ_Handler
 	bx r0
-
+*/
+    push {lr}			
+	push {r0-r3, r12}
+	mrs r0, spsr
+	push {r0}
+	mrc p15, 4, r3, c15, c0, 0 							
+	add r3, r3, #0X2000			
+	ldr r0, [r3, #0XC]
+	push {r0, r3}
+	ldr r2, =system_irqhandler
+	blx r2	
+	pop {r0, r3}				
+	str r0, [r3, #0X10]
+	pop {r0}						
+	msr spsr_cxsf, r0
+	pop {r0-r3, r12}
+	pop {lr}
+	subs pc, lr, #4
 .text
 endtext:
 .data
