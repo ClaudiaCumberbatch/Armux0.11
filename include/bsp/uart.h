@@ -19,4 +19,6 @@ void enable_uart0();
 void print_uart0(const char *s);
 void tfp_printf(char *fmt, ...);
 
+#define printf tfp_printf 
+
 #endif

@@ -72,13 +72,13 @@ void tfp_printf(char *fmt, ...)
         ch = *(fmt++);
         lz = 1;
       }
-      if (ch >= '0' && ch <= '9') 
+      if (ch >= '0' && ch <= '9')
       {
         w = 0;
         while (ch >= '0' && ch <= '9')
         {
           w = (((w << 2) + w) << 1) + ch - '0';
-          ch = *fmt++;
+          ch = *(fmt++);
         }
       }
       bf = buf;
@@ -110,10 +110,10 @@ void tfp_printf(char *fmt, ...)
         divOut(0x100);
         divOut(0x10);
         outDgt(num);
-        break;
-      case 'c':
-        out((char)(va_arg(va, int)));
-        break;*/
+        break; 
+       case 'c':
+         out((char)(va_arg(va, int)));
+         break;*/
       case 's':
         p = va_arg(va, char *);
         break;
@@ -124,23 +124,18 @@ void tfp_printf(char *fmt, ...)
       }
       *bf = 0;
       bf = p;
-      // print_uart0(bf);
       // *bf++;
       // if (*bf++ && w > 0) print_uart0("wow");
       while (*bf++ && w > 0)
       {
-        // print_uart0("here5");
         w--;
       }
-      // print_uart0("here2");
       while (w-- > 0)
       {
-        // print_uart0("here3");
-        *TxRxUART0 = (unsigned int)(lz ? '0' : ' '); 
+        *TxRxUART0 = (unsigned int)(lz ? '0' : ' ');
       }
       while ((ch = *p++))
       {
-        // print_uart0("here4");
         *TxRxUART0 = (unsigned int)(ch); /* Transmit char */
       }
     }

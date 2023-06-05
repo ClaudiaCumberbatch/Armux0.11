@@ -4,7 +4,7 @@ void main(void)
 {
   enable_uart0();
   // print_uart0("\r\nHello world!");
-  tfp_printf("Hello %d, %d\n", 1, 2);
+  printf("Hello %d %d\n", 1, 2);
   while (1)
     ; /*dont exit the program*/
 }
