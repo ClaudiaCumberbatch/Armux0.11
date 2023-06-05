@@ -1,6 +1,6 @@
 include ../Makefile.header
 
-LDFLAGS	+= -r
+LDFLAGS	+= -r 
 
 CFLAGS	+= -I../include
 
